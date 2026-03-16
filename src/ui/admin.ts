@@ -1,7 +1,8 @@
 import { saveUserQuote, getUserQuotes, exportUserQuotes, importUserQuotes, clearUserQuotes } from "../quotes/userQuotes";
+import { loadCustomQuotes } from "../quotes/customQuotes";
 import { loadNextCard } from "../main";
+import type { Quote } from "../types";
 
-const panel = document.getElementById("admin-panel") as HTMLElement;
 const countEl = document.getElementById("quote-count") as HTMLElement;
 const listEl = document.getElementById("quotes-list") as HTMLElement;
 
@@ -12,6 +13,9 @@ const viewCreate = document.getElementById("view-create") as HTMLElement;
 const viewLibrary = document.getElementById("view-library") as HTMLElement;
 
 let closeAdminFn: () => void = () => {};
+
+// Store merged list for click-by-index to work correctly
+let mergedQuoteList: Quote[] = [];
 
 export function bindAdminClose(fn: () => void) {
   closeAdminFn = fn;
@@ -28,14 +32,13 @@ export function initAdmin() {
   document.getElementById("clear-btn")!.addEventListener("click", handleClear);
   document.getElementById("import-file")!.addEventListener("change", handleImport);
 
-  // Bind Library Item Click
+  // Library item click — use index from mergedQuoteList
   listEl.addEventListener("click", (e) => {
-    const item = (e.target as HTMLElement).closest('.list-item');
+    const item = (e.target as HTMLElement).closest(".list-item");
     if (!item) return;
 
-    const index = parseInt(item.getAttribute('data-index') || '0', 10);
-    const quotes = getUserQuotes();
-    const selectedQuote = quotes[index];
+    const index = parseInt(item.getAttribute("data-index") || "0", 10);
+    const selectedQuote = mergedQuoteList[index];
 
     if (selectedQuote) {
       closeAdminFn();
@@ -58,8 +61,9 @@ function switchTab(tab: "create" | "library") {
     tabCreate.classList.remove("active");
     viewLibrary.classList.remove("hidden");
     viewCreate.classList.add("hidden");
+    // ✅ Refresh list every time library tab is opened to stay in sync
+    updateCountAndList();
   }
-  // Refresh feather icons if views changed
   if ((window as any).feather) (window as any).feather.replace();
 }
 
@@ -77,7 +81,7 @@ function handleAdd() {
     content,
     character: { name: character },
     anime: { name: anime },
-    source: "user" as const
+    source: "user" as const,
   };
 
   saveUserQuote(newQuote);
@@ -87,14 +91,13 @@ function handleAdd() {
   (document.getElementById("input-anime") as HTMLInputElement).value = "";
 
   updateCountAndList();
-  
   closeAdminFn();
   document.getElementById("card-container")!.innerHTML = "";
   loadNextCard(newQuote);
 }
 
 function handleClear() {
-  if (confirm("🗑️ Clear all your custom quotes?")) {
+  if (confirm("🗑️ Clear all your custom quotes from library?")) {
     clearUserQuotes();
     updateCountAndList();
   }
@@ -108,19 +111,29 @@ async function handleImport(e: Event) {
   alert(`✅ Imported successfully!`);
 }
 
-function updateCountAndList() {
-  const quotes = getUserQuotes();
-  countEl.textContent = quotes.length.toString();
-  
-  if (quotes.length === 0) {
-    listEl.innerHTML = `<div class="empty-list">No custom quotes yet.</div>`;
+export async function updateCountAndList() {
+  const userQuotes = getUserQuotes();
+  const customQuotes = await loadCustomQuotes();
+
+  // ✅ Merge both: user-created first, then default JSON quotes
+  mergedQuoteList = [...userQuotes, ...customQuotes];
+
+  countEl.textContent = mergedQuoteList.length.toString();
+
+  if (mergedQuoteList.length === 0) {
+    listEl.innerHTML = `<div class="empty-list">No quotes yet.</div>`;
     return;
   }
 
-  listEl.innerHTML = quotes.map((q, index) => `
+  listEl.innerHTML = mergedQuoteList
+    .map(
+      (q, index) => `
     <div class="list-item" data-index="${index}">
+      <div class="list-badge">${q.source === "user" ? "✍️ Mine" : "📁 Default"}</div>
       <div class="list-q">"${q.content}"</div>
-      <div class="list-meta">- ${q.character?.name || q.character}</div>
+      <div class="list-meta">— ${q.character?.name || q.character} · ${q.anime?.name || q.anime}</div>
     </div>
-  `).join('');
+  `
+    )
+    .join("");
 }
