@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>AniQuote</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script type="module" crossorigin src="/anime-quotes/assets/index-FK-8zvlf.js"></script>
+    <link rel="stylesheet" crossorigin href="/anime-quotes/assets/index-C0dpf7SR.css">
+  </head>
+  <body>
+    <div id="app">
+      <!-- ── Header Navigation ── -->
+      <header class="app-header">
+        <div class="nav-links">
+          <button id="tab-animechan" class="nav-item active">Discover</button>
+          <button id="tab-own" class="nav-item">My Quotes</button>
+        </div>
+      </header>
+
+      <!-- ── Rate Limit Indicator ── -->
+      <div id="rate-badge" class="rate-indicator hidden"></div>
+
+      <!-- ── Swipeable Cards Area ── -->
+      <main class="card-container" id="card-container">
+        <!-- Cards injected via JS -->
+      </main>
+
+      <!-- ── API Credits ── -->
+      <div class="api-credits">
+        Images provided by
+        <a href="https://anilist.co" target="_blank">AniList</a> &
+        <a href="https://jikan.moe" target="_blank">Jikan</a>
+      </div>
+
+      <!-- ── Bottom Action Dock ── -->
+      <footer class="app-footer">
+        <div style="width: 40px"></div>
+        <!-- Placeholder to center the hint -->
+        <div class="swipe-hint">Swipe to discover</div>
+        <button class="icon-btn" id="btn-admin" aria-label="Manage Quotes">
+          <i data-feather="settings"></i>
+        </button>
+      </footer>
+      <!-- ── Slide-up Admin Panel ── -->
+      <div id="admin-panel" class="bottom-sheet hidden">
+        <div class="sheet-handle"></div>
+        <div class="sheet-content">
+          <!-- Segmented Control Tabs -->
+          <div class="sheet-tabs">
+            <button id="sheet-tab-create" class="sheet-tab active">
+              Create Quote
+            </button>
+            <button id="sheet-tab-library" class="sheet-tab">
+              My Library (<span id="quote-count">0</span>)
+            </button>
+          </div>
+
+          <!-- TAB 1: Create View -->
+          <div id="view-create" class="sheet-view">
+            <div class="admin-inputs">
+              <textarea
+                id="input-content"
+                placeholder="Type a quote here..."
+                rows="3"
+              ></textarea>
+              <div class="input-row">
+                <input id="input-char" placeholder="Character" />
+                <input id="input-anime" placeholder="Anime" />
+              </div>
+              <button id="add-quote-btn" class="btn-primary">
+                Add & View Now
+              </button>
+            </div>
+          </div>
+
+          <!-- TAB 2: Library View -->
+          <div id="view-library" class="sheet-view hidden">
+            <div class="admin-actions">
+              <button id="export-btn" class="btn-outline" aria-label="Export">
+                <i data-feather="download"></i>
+              </button>
+              <label class="btn-outline" aria-label="Import">
+                <i data-feather="upload"></i>
+                <input id="import-file" type="file" accept=".json" hidden />
+              </label>
+              <button id="clear-btn" class="btn-danger" aria-label="Clear All">
+                <i data-feather="trash-2"></i>
+              </button>
+            </div>
+            <div id="quotes-list" class="scrollable-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="overlay" class="overlay hidden"></div>
+    </div>
+
+    <script>
+      feather.replace()
+    </script>
+  </body>
+</html>
