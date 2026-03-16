@@ -5,7 +5,7 @@
 
 ![App Preview](./src/assets/preview.png)
 
-**Live Demo:** [Add your GitHub Pages / hosted demo link here](https://your-demo-link-here.com)
+**Live Demo:** [Add your GitHub Pages / hosted demo link here]**Live Demo:** [https://nicholasyuen478.github.io/anime-quotes/](https://nicholasyuen478.github.io/anime-quotes/)
 
 ---
 
