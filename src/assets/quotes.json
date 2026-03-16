@@ -1,0 +1,20 @@
+[
+  {
+    "content": "In the middle of difficulty lies opportunity.",
+    "character": { "name": "Itachi Uchiha" },
+    "anime": { "name": "Naruto" },
+    "source": "custom"
+  },
+  {
+    "content": "The world is not beautiful, therefore it is.",
+    "character": { "name": "Kino" },
+    "anime": { "name": "Kino's Journey" },
+    "source": "custom"
+  },
+  {
+    "content": "A lesson without pain is meaningless.",
+    "character": { "name": "Edward Elric" },
+    "anime": { "name": "Fullmetal Alchemist" },
+    "source": "custom"
+  }
+]
